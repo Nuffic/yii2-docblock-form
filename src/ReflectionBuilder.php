@@ -35,6 +35,9 @@ class ReflectionBuilder extends \ReflectionClass
     private function getInputReflections()
     {
         $reflections = array_filter(ArrayHelper::merge($this->getProperties(\ReflectionProperty::IS_PUBLIC), $this->getMethods(\ReflectionMethod::IS_PUBLIC)), function ($reflection) {
+            if ($reflection->getDeclaringClass()->getName() !== $this->getName()) {
+                return false;
+            }
             if ($reflection instanceof \ReflectionMethod) {
                 /**
                  * var \ReflectionMethod $reflection
