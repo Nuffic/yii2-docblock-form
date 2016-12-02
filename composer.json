@@ -16,5 +16,8 @@
     "require": {
         "yiisoft/yii2": "*",
         "phpdocumentor/reflection-docblock": "^2.0"
+    },
+    "require-dev": {
+        "codeception/aspect-mock": "*"
     }
 }

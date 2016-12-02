@@ -10,5 +10,11 @@ $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
+$kernel = \AspectMock\Kernel::getInstance();
+$kernel->init([
+    'debug' => true,
+    'includePaths' => [__DIR__.'/../src']
+]);
+
 Yii::setAlias('@nufficunit/extensions/docblock', __DIR__);
 Yii::setAlias('@nuffic/docblock', dirname(__DIR__));

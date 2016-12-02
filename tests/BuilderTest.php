@@ -7,7 +7,7 @@ use nuffic\docblock\ReflectionBuilder;
 /**
 * 
 */
-class TestBuilder extends TestCase
+class BuilderTest extends TestCase
 {
     public function testClassWithInputs()
     {
