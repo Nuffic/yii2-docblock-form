@@ -12,6 +12,6 @@ class TestBuilder extends TestCase
     public function testClassWithInputs()
     {
         $tester = new ReflectionBuilder(stubs\FooStub::className());
-        var_dump($tester->getInputTags());
+        var_dump($tester->getModel());
     }
 }

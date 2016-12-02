@@ -11,11 +11,11 @@ class FooStub extends \yii\base\Component
     /**
      * @input textInput[{"type":"number"}]
      */
-    public $bar;
+    public $bar = 'hue';
 
     public function getBaz()
     {
-        
+        return 'kala';
     }
 
     /**

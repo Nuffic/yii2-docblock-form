@@ -6,6 +6,7 @@ use phpDocumentor\Reflection\DocBlock\Context;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use phpDocumentor\Reflection\DocBlock\Tag;
+use yii\base\DynamicModel;
 
 /**
 * 
@@ -14,9 +15,15 @@ class ReflectionBuilder extends \ReflectionClass
 {
     private $_context;
 
+    private $_instance;
+
     public function __construct($argument)
     {
         Tag::registerTagHandler('input', '\nuffic\docblock\tag\InputTag');
+        $this->_instance = $argument;
+        if (is_string($this->_instance)) {
+            $this->_instance = new $argument;
+        }
         parent::__construct($argument);
     }
 
@@ -63,6 +70,18 @@ class ReflectionBuilder extends \ReflectionClass
             $phpdoc = new DocBlock($reflection, $this->getContext());
             return $phpdoc->getTagsByName('input')[0];
         }, $this->getInputReflections());
+    }
+
+    public function getModel()
+    {
+        $properties = array_keys($this->getInputTags());
+        $model = new DynamicModel(array_keys($this->getInputTags()));
+        $model->addRule($properties, 'safe');
+        $model->load(array_map(function ($value) {
+            return ArrayHelper::getValue($this->_instance, $value);
+        }, array_combine(array_values($properties), $properties)), '');
+
+        return $model;
     }
 
     private function getContext()
