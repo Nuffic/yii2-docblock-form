@@ -11,18 +11,20 @@ class FooStub extends \yii\base\Component
     /**
      * @input textInput[{"type":"number"}]
      */
-    public $bar = 'hue';
+    public $bar = 'test';
+
+    private $_baz = 'bar';
 
     public function getBaz()
     {
-        return 'kala';
+        return $this->_baz;
     }
 
     /**
      * @input textarea
      */
-    public function setBaz()
+    public function setBaz($value)
     {
-        
+        $this->_baz = $value;
     }
 }
