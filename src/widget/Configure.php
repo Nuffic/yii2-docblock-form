@@ -3,7 +3,6 @@
 namespace nuffic\docblock\widget;
 
 use yii\base\Widget;
-use yii\widgets\ActiveForm;
 
 /**
 * 
@@ -16,12 +15,12 @@ class Configure extends Widget
 	public $reflection;
 
 	/**
-	 * @var \yii\widget\ActiveForm
+	 * @var \yii\widgets\ActiveForm
 	 */
 	public $form;
 
     /**
-     * @return     <type>  ( description_of_the_return_value )
+     * @return string View for the widget
      */
     public $template;
 

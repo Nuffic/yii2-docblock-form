@@ -1,6 +1,7 @@
 <?php
 namespace nuffic\docblock;
 
+use nuffic\docblock\tag\InputTag;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Context;
 use yii\helpers\ArrayHelper;
@@ -30,7 +31,7 @@ class ReflectionBuilder extends \ReflectionClass
     /**
      * Get all reflections that have input tags
      *
-     * @return  ReflectionProperty[]|ReflectionMethod[]
+     * @return  \ReflectionProperty[]|\ReflectionMethod[]
      */
     private function getInputReflections()
     {
@@ -65,7 +66,7 @@ class ReflectionBuilder extends \ReflectionClass
     /**
      * Gets the input tags.
      *
-     * @return  The input tags.
+     * @return InputTag[] The input tags.
      */
     public function getInputTags()
     {

@@ -1,7 +1,8 @@
 <?php
 /**
- * @var \yii\web\ActiveForm $form
- * @var \nuffic\docblock\tag\InputTag[]  $tags
+ * @var \yii\widgets\ActiveForm $form
+ * @var \nuffic\docblock\tag\InputTag[] $tags
+ * @var \yii\base\DynamicModel $model
  */
 
 /**
