@@ -80,7 +80,9 @@ class ReflectionBuilder extends \ReflectionClass
     {
         $properties = array_keys($this->getInputTags());
         $model = new DynamicModel(array_keys($this->getInputTags()));
-        $model->addRule($properties, 'safe');
+        $model->addRule($properties, 'default', [
+            'value' => null
+        ]);
         $model->load(array_map(function ($value) {
             return ArrayHelper::getValue($this->_instance, $value);
         }, array_combine(array_values($properties), $properties)), '');
