@@ -1,26 +1,45 @@
 <?php
+
 namespace nuffic\docblock;
 
 use nuffic\docblock\tag\InputTag;
+use nuffic\docblock\tag\ValidatorTag;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Context;
+use phpDocumentor\Reflection\DocBlock\Tag;
+use Yii;
+use yii\base\DynamicModel;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
-use phpDocumentor\Reflection\DocBlock\Tag;
-use yii\base\DynamicModel;
+use yii\validators\Validator;
 
 /**
-* 
+*
 */
 class ReflectionBuilder extends \ReflectionClass
 {
+    /**
+     * @var Context
+     */
     private $_context;
 
+    /**
+     * @var object
+     */
     private $_instance;
 
+    /**
+     * @var DynamicModel
+     */
+    private $_model;
+
+    /**
+     * @inheritdoc
+     */
     public function __construct($argument)
     {
-        Tag::registerTagHandler('input', '\nuffic\docblock\tag\InputTag');
+        Tag::registerTagHandler('input', InputTag::class);
+        Tag::registerTagHandler('validator', ValidatorTag::class);
         $this->_instance = $argument;
         if (is_string($this->_instance)) {
             $this->_instance = new $argument;
@@ -76,18 +95,43 @@ class ReflectionBuilder extends \ReflectionClass
         }, $this->getInputReflections());
     }
 
+    /**
+     * @return array ["attribute" => ValidatorTag[]]
+     */
+    public function getValidatorTags()
+    {
+        return array_map(function ($reflection) {
+            $phpdoc = new DocBlock($reflection, $this->getContext());
+            return $phpdoc->getTagsByName('validator');
+        }, $this->getInputReflections());
+    }
+
     public function getModel()
     {
+        if ($this->_model) {
+            return $this->_model;
+        }
+
         $properties = array_keys($this->getInputTags());
-        $model = new DynamicModel(array_keys($this->getInputTags()));
-        $model->addRule($properties, 'default', [
+        $this->_model = new DynamicModel(array_keys($this->getInputTags()));
+        $this->_model->addRule($properties, 'default', [
             'value' => null
         ]);
-        $model->load(array_map(function ($value) {
+
+        foreach ($this->getValidatorTags() as $attribute => $tags) {
+            foreach ($tags as $tag) {
+                /** @var Validator $validator */
+                $validator = Yii::createObject($tag->validatorConfig);
+                $validator->attributes = [$attribute];
+                $this->_model->getValidators()->append($validator);
+            }
+        }
+
+        $this->_model->load(array_map(function ($value) {
             return ArrayHelper::getValue($this->_instance, $value);
         }, array_combine(array_values($properties), $properties)), '');
 
-        return $model;
+        return $this->_model;
     }
 
     private function getContext()

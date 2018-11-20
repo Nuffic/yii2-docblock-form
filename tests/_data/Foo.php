@@ -1,12 +1,11 @@
 <?php
 
-namespace nufficunit\extensions\docblock\stubs;
+namespace tests\data;
 
 /**
- * 
- * property string $baz
+ * @property string $baz
  */
-class FooStub extends \yii\base\Component
+class Foo extends \yii\base\Component
 {
     /**
      * @input textInput[{"type":"number"}]
@@ -21,6 +20,7 @@ class FooStub extends \yii\base\Component
     }
 
     /**
+     * @validator {"class": "\\yii\\validators\\RequiredValidator"}
      * @input textarea
      */
     public function setBaz($value)
