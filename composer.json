@@ -14,10 +14,19 @@
         }
     },
     "require": {
-        "yiisoft/yii2": "*",
-        "phpdocumentor/reflection-docblock": "^2.0"
+        "phpdocumentor/reflection-docblock": "^2.0",
+        "yiisoft/yii2": "^2.0"
     },
     "require-dev": {
-        "codeception/aspect-mock": "*"
+        "codeception/codeception": "^2.5"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "config": {
+        "sort-packages": true
     }
 }

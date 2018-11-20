@@ -1,16 +1,24 @@
 <?php
+
 namespace nuffic\docblock\tag;
 
 use phpDocumentor\Reflection\DocBlock\Tag;
 use yii\helpers\Json;
 
 /**
-* 
-*/
+ * Class InputTag
+ * @package nuffic\docblock\tag
+ */
 class InputTag extends Tag
 {
+    /**
+     * @var string Method name in \yii\widgets\ActiveField
+     */
     public $method = 'textInput';
 
+    /**
+     * @var array
+     */
     public $parameters = [];
 
     /**
