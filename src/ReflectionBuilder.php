@@ -2,12 +2,14 @@
 
 namespace nuffic\docblock;
 
+use Exception;
 use nuffic\docblock\tag\InputTag;
 use nuffic\docblock\tag\ValidatorTag;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Context;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use Yii;
+use yii\base\Model;
 use yii\base\DynamicModel;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -29,7 +31,7 @@ class ReflectionBuilder extends \ReflectionClass
     private $_instance;
 
     /**
-     * @var DynamicModel
+     * @var Model
      */
     private $_model;
 
@@ -44,6 +46,10 @@ class ReflectionBuilder extends \ReflectionClass
         if (is_string($this->_instance)) {
             $this->_instance = new $argument;
         }
+
+        if ($this->_instance instanceof Model) {
+            $this->_model = $this->_instance;
+        }
         parent::__construct($argument);
     }
 
@@ -54,24 +60,29 @@ class ReflectionBuilder extends \ReflectionClass
      */
     private function getInputReflections()
     {
-        $reflections = array_filter(ArrayHelper::merge($this->getProperties(\ReflectionProperty::IS_PUBLIC), $this->getMethods(\ReflectionMethod::IS_PUBLIC)), function ($reflection) {
-            if ($reflection->getDeclaringClass()->getName() !== $this->getName()) {
+        $reflections = array_filter($this->getPublicInputs(), function ($reflection) {
+            if (!$this->_instance instanceof Model && $reflection->getDeclaringClass()->getName() !== $this->getName()) {
                 return false;
             }
-            if ($reflection instanceof \ReflectionMethod) {
-                /**
-                 * var \ReflectionMethod $reflection
-                 */
-                if (substr($reflection->name, 0, 3) !== 'set') {
-                    return false;
+            
+            try {
+                if ($reflection instanceof \ReflectionMethod) {
+                    /**
+                     * var \ReflectionMethod $reflection
+                     */
+                    if (substr($reflection->name, 0, 3) !== 'set') {
+                        return false;
+                    }
+                    $getterName = Inflector::variablize('get ' . Inflector::camel2words(substr($reflection->name, 3)));
+                    if (!$this->getMethod($getterName)) {
+                        return false;
+                    }
                 }
-                $getterName = Inflector::variablize('get ' . Inflector::camel2words(substr($reflection->name, 3)));
-                if (!$this->getMethod($getterName)) {
-                    return false;
-                }
+                $phpdoc = new DocBlock($reflection, $this->getContext());
+                return $phpdoc->hasTag('input');
+            } catch (Exception $ex) {
+                return false;
             }
-            $phpdoc = new DocBlock($reflection, $this->getContext());
-            return $phpdoc->hasTag('input');
         });
 
         return ArrayHelper::index($reflections, function ($reflection) {
@@ -80,6 +91,17 @@ class ReflectionBuilder extends \ReflectionClass
             }
             return $reflection->name;
         });
+    }
+
+    /**
+     * @return array
+     */
+    private function getPublicInputs()
+    {
+        return ArrayHelper::merge(
+            $this->getProperties(\ReflectionProperty::IS_PUBLIC),
+            $this->getMethods(\ReflectionMethod::IS_PUBLIC)
+        );
     }
 
     /**
