@@ -12,15 +12,15 @@ use yii\widgets\ActiveForm;
  */
 class Configure extends Widget
 {
-	/**
-	 * @var ReflectionBuilder
-	 */
-	public $reflection;
+    /**
+     * @var ReflectionBuilder
+     */
+    public $reflection;
 
-	/**
-	 * @var ActiveForm
-	 */
-	public $form;
+    /**
+     * @var ActiveForm
+     */
+    public $form;
 
     /**
      * @return string View for the widget
