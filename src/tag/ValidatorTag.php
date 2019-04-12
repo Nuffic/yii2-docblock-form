@@ -2,27 +2,50 @@
 
 namespace nuffic\docblock\tag;
 
-use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Tags\BaseTag;
+use phpDocumentor\Reflection\DocBlock\Tags\Factory\StaticMethod;
+use Webmozart\Assert\Assert;
 use yii\helpers\Json;
 
 /**
  * Class ValidatorTag
  * @package nuffic\docblock\tag
  */
-class ValidatorTag extends Tag
+class ValidatorTag extends BaseTag implements StaticMethod
 {
+    /**
+     * @var string register that this is the validator tag.
+     */
+    protected $name = 'validator';
+
     /**
      * @var array Validator configuration for Yii::createObject method
      */
-    public $validatorConfig;
+    private $_validatorConfig = [];
 
     /**
-     * {@inheritdoc}
+     * Initializes this tag with the method name and params.
+     *
+     * @param array $validatorConfig
      */
-    public function setContent($content)
+    public function __construct($validatorConfig = [])
     {
-        parent::setContent($content);
-        $this->validatorConfig = Json::decode($content);
-        return $this;
+        $this->_validatorConfig = $validatorConfig;
+    }
+
+    public function getValidatorConfig()
+    {
+        return $this->_validatorConfig;
+    }
+
+    public function __toString()
+    {
+        return Json::encode($this->_validatorConfig);
+    }
+
+    public static function create($body)
+    {
+        Assert::string($body);
+        return new static(Json::decode($body));
     }
 }
