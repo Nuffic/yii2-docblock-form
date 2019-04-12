@@ -14,11 +14,12 @@
         }
     },
     "require": {
-        "phpdocumentor/reflection-docblock": "^2.0",
+        "phpdocumentor/reflection-docblock": "^3.0",
         "yiisoft/yii2": "^2.0"
     },
     "require-dev": {
-        "codeception/codeception": "^2.5"
+        "codeception/codeception": "^2.5",
+        "yiisoft/yii2-coding-standards": "^2.0"
     },
     "repositories": [
         {

@@ -2,28 +2,34 @@
 
 namespace nuffic\docblock\widget;
 
+use nuffic\docblock\ReflectionBuilder;
 use yii\base\Widget;
+use yii\widgets\ActiveForm;
 
 /**
-* 
-*/
+ * Class Configure
+ * @package nuffic\docblock\widget
+ */
 class Configure extends Widget
 {
-	/**
-	 * @var \nuffic\docblock\ReflectionBuilder
-	 */
-	public $reflection;
+    /**
+     * @var ReflectionBuilder
+     */
+    public $reflection;
 
-	/**
-	 * @var \yii\widgets\ActiveForm
-	 */
-	public $form;
+    /**
+     * @var ActiveForm
+     */
+    public $form;
 
     /**
      * @return string View for the widget
      */
     public $template;
 
+    /**
+     * @inheritDoc
+     */
     public function init()
     {
         if (!$this->template) {
@@ -33,6 +39,9 @@ class Configure extends Widget
         parent::init();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function run()
     {
         return $this->render($this->template, [
