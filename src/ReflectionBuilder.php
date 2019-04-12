@@ -5,26 +5,20 @@ namespace nuffic\docblock;
 use Exception;
 use nuffic\docblock\tag\InputTag;
 use nuffic\docblock\tag\ValidatorTag;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Context;
-use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlockFactory;
 use Yii;
-use yii\base\Model;
 use yii\base\DynamicModel;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\Validator;
 
 /**
-*
-*/
+ * Class ReflectionBuilder
+ * @package nuffic\docblock
+ */
 class ReflectionBuilder extends \ReflectionClass
 {
-    /**
-     * @var Context
-     */
-    private $_context;
-
     /**
      * @var object
      */
@@ -36,12 +30,20 @@ class ReflectionBuilder extends \ReflectionClass
     private $_model;
 
     /**
+     * @var DocBlockFactory
+     */
+    private $_factory;
+
+    /**
      * @inheritdoc
      */
     public function __construct($argument)
     {
-        Tag::registerTagHandler('input', InputTag::class);
-        Tag::registerTagHandler('validator', ValidatorTag::class);
+        $this->_factory = DocBlockFactory::createInstance([
+            'input' => InputTag::class,
+            'validator' => ValidatorTag::class,
+        ]);
+
         $this->_instance = $argument;
         if (is_string($this->_instance)) {
             $this->_instance = new $argument;
@@ -64,7 +66,7 @@ class ReflectionBuilder extends \ReflectionClass
             if (!$this->_instance instanceof Model && $reflection->getDeclaringClass()->getName() !== $this->getName()) {
                 return false;
             }
-            
+
             try {
                 if ($reflection instanceof \ReflectionMethod) {
                     /**
@@ -78,7 +80,7 @@ class ReflectionBuilder extends \ReflectionClass
                         return false;
                     }
                 }
-                $phpdoc = new DocBlock($reflection, $this->getContext());
+                $phpdoc = $this->_factory->create($reflection->getDocComment());
                 return $phpdoc->hasTag('input');
             } catch (Exception $ex) {
                 return false;
@@ -112,7 +114,7 @@ class ReflectionBuilder extends \ReflectionClass
     public function getInputTags()
     {
         return array_map(function ($reflection) {
-            $phpdoc = new DocBlock($reflection, $this->getContext());
+            $phpdoc = $this->_factory->create($reflection->getDocComment());
             return $phpdoc->getTagsByName('input')[0];
         }, $this->getInputReflections());
     }
@@ -123,7 +125,7 @@ class ReflectionBuilder extends \ReflectionClass
     public function getValidatorTags()
     {
         return array_map(function ($reflection) {
-            $phpdoc = new DocBlock($reflection, $this->getContext());
+            $phpdoc = $this->_factory->create($reflection->getDocComment());
             return $phpdoc->getTagsByName('validator');
         }, $this->getInputReflections());
     }
@@ -143,7 +145,7 @@ class ReflectionBuilder extends \ReflectionClass
         foreach ($this->getValidatorTags() as $attribute => $tags) {
             foreach ($tags as $tag) {
                 /** @var Validator $validator */
-                $validator = Yii::createObject($tag->validatorConfig);
+                $validator = Yii::createObject($tag->getValidatorConfig());
                 $validator->attributes = [$attribute];
                 $this->_model->getValidators()->append($validator);
             }
@@ -154,13 +156,5 @@ class ReflectionBuilder extends \ReflectionClass
         }, array_combine(array_values($properties), $properties)), '');
 
         return $this->_model;
-    }
-
-    private function getContext()
-    {
-        if (!$this->_context) {
-            $this->_context = new Context($this->getNamespaceName());
-        }
-        return $this->_context;
     }
 }
