@@ -29,12 +29,22 @@ class InputTag extends BaseTag implements StaticMethod
     private $_parameters = [];
 
     /**
+     * @var string
+     */
+    private $_summary;
+
+    /**
+     * @var mixed
+     */
+    private $_defaultValue;
+
+    /**
      * Initializes this tag with the method name and params.
      *
      * @param string $method
      * @param array $parameters
      */
-    public function __construct($method, $parameters = [])
+    public function __construct($method = 'textInput', $parameters = [])
     {
         Assert::string($method);
         Assert::isArray($parameters);
@@ -57,6 +67,42 @@ class InputTag extends BaseTag implements StaticMethod
     public function getParameters()
     {
         return $this->_parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSummary()
+    {
+        return $this->_summary;
+    }
+
+    /**
+     * @param string $summary
+     * @return $this
+     */
+    public function setSummary($summary)
+    {
+        $this->_summary = $summary;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDefaultValue()
+    {
+        return $this->_defaultValue;
+    }
+
+    /**
+     * @param mixed $defaultValue
+     * @return $this
+     */
+    public function setDefaultValue($defaultValue)
+    {
+        $this->_defaultValue = $defaultValue;
+        return $this;
     }
 
     /**
