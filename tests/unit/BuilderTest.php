@@ -3,6 +3,7 @@
 namespace tests\unit;
 
 use nuffic\docblock\ReflectionBuilder;
+use nuffic\docblock\tag\InputTag;
 use tests\data\Bar;
 use tests\data\Foo;
 use tests\data\Person;
@@ -77,5 +78,19 @@ class BuilderTest extends \Codeception\Test\Unit
             [['name' => 'abcdefghij'], true],
             [['name' => 'abcdefghijk'], false],
         ];
+    }
+
+    public function testGetInputTags()
+    {
+        $builder = new ReflectionBuilder(Foo::class);
+        $inputTags = $builder->getInputTags();
+        $this->assertArrayHasKey('bar', $inputTags);
+        $this->assertArrayHasKey('baz', $inputTags);
+        /** @var InputTag $bar */
+        $bar = $inputTags['bar'];
+        $this->assertEquals('This is bar', $bar->getSummary());
+        $this->assertEquals('test', $bar->getDefaultValue());
+        $this->assertEquals('textInput', $bar->getMethod());
+        $this->assertEquals([['type' => 'number']], $bar->getParameters());
     }
 }

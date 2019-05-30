@@ -115,7 +115,16 @@ class ReflectionBuilder extends \ReflectionClass
     {
         return array_map(function ($reflection) {
             $phpdoc = $this->_factory->create($reflection->getDocComment());
-            return $phpdoc->getTagsByName('input')[0];
+            $tag = $phpdoc->getTagsByName('input')[0];
+            if ($tag instanceof InputTag) {
+                $tag->setSummary($phpdoc->getSummary());
+
+                if ($reflection instanceof \ReflectionProperty) {
+                    $defaultProperties = $reflection->getDeclaringClass()->getDefaultProperties();
+                    $tag->setDefaultValue($defaultProperties[$reflection->getName()]);
+                }
+            }
+            return $tag;
         }, $this->getInputReflections());
     }
 

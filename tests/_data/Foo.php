@@ -8,6 +8,7 @@ namespace tests\data;
 class Foo extends \yii\base\Component
 {
     /**
+     * This is bar
      * @input textInput[{"type":"number"}]
      */
     public $bar = 'test';
