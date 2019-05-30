@@ -122,7 +122,7 @@ class ReflectionBuilder extends \ReflectionClass
                 if ($reflection instanceof \ReflectionProperty) {
                     $defaultProperties = $reflection->getDeclaringClass()->getDefaultProperties();
                     $tag->setDefaultValue($defaultProperties[$reflection->getName()]);
-                }                
+                }
             }
             return $tag;
         }, $this->getInputReflections());
