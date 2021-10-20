@@ -108,7 +108,7 @@ class InputTag extends BaseTag implements StaticMethod
     /**
      * @inheritDoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->_method . ($this->_parameters ? Json::encode($this->_parameters) : '');
     }
@@ -117,7 +117,7 @@ class InputTag extends BaseTag implements StaticMethod
      * @inheritDoc
      * @return InputTag|null
      */
-    public static function create($body)
+    public static function create(string $body)
     {
         Assert::string($body);
 
