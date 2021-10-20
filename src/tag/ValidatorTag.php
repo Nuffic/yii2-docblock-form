@@ -38,12 +38,12 @@ class ValidatorTag extends BaseTag implements StaticMethod
         return $this->_validatorConfig;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return Json::encode($this->_validatorConfig);
     }
 
-    public static function create($body)
+    public static function create(string $body)
     {
         Assert::string($body);
         return new static(Json::decode($body));
