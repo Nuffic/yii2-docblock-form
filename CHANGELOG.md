@@ -1,6 +1,10 @@
 Under development
 -----------------
 
+1.4.0 2024-10-14
+-----------------
+- Feature: Add property types (randelpalu)
+
 1.3.0 2021-10-20
 -----------------
 - Feature: Upgrade to reflection-docblock 5 (rinu)
