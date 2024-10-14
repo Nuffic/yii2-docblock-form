@@ -16,7 +16,7 @@ class ValidatorTag extends BaseTag implements StaticMethod
     /**
      * @var string register that this is the validator tag.
      */
-    protected $name = 'validator';
+    protected string $name = 'validator';
 
     /**
      * @var array Validator configuration for Yii::createObject method

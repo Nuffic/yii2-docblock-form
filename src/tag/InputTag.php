@@ -16,7 +16,7 @@ class InputTag extends BaseTag implements StaticMethod
     /**
      * @var string register that this is the input tag.
      */
-    protected $name = 'input';
+    protected string $name = 'input';
 
     /**
      * @var string
